@@ -33,6 +33,8 @@ Postura_Step1_Requirements_Divided.md
 # Windows TFLite DLL (local dev only)
 libtensorflowlite_c-win.dll
 
-# Old/backup model files
-assets/ml/efficientdet_lite0_old_no_nms.tflite
-assets/ml/efficientdet_lite0_nms.tflite
+# Model binary (download via scripts/download_model.sh)
+assets/ml/*.tflite
+
+# Internal planning docs
+Postura_Step1_Requirements_Divided.md
