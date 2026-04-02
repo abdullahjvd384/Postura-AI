@@ -87,7 +87,7 @@ class DetectionService {
 
     for (final d in detections) {
       if (d.classId == cocoPersonClassId) hasPerson = true;
-      if (d.classId == cocoTvClassId) hasMonitor = true;
+      if (monitorClassIds.contains(d.classId)) hasMonitor = true;
     }
 
     return hasPerson && hasMonitor;

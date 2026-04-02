@@ -8,13 +8,16 @@
 const int cocoPersonClassId = 0;
 
 /// COCO class index for "tv" (monitors, screens).
-/// In the standard COCO 90-class label map this is index 62 (0-indexed).
-/// Verify against your specific model variant's label map.
-const int cocoTvClassId = 62;
+/// Model uses COCO category ID - 1:  tv = 72 - 1 = 71.
+const int cocoTvClassId = 71;
+
+/// COCO class index for "laptop".
+/// Model uses COCO category ID - 1:  laptop = 73 - 1 = 72.
+/// The model often classifies desktop monitors as "laptop", so we accept both.
+const int cocoLaptopClassId = 72;
+
+/// All class IDs that count as a "screen/monitor" detection.
+const Set<int> monitorClassIds = {cocoTvClassId, cocoLaptopClassId};
 
 /// Confidence threshold — detections below this are ignored.
 const double confidenceThreshold = 0.5;
-
-/// Set of all acceptable label strings for the monitor class.
-/// Used only if parsing string labels instead of class IDs.
-const Set<String> monitorLabels = {'tv', 'tvmonitor', 'monitor', 'screen'};

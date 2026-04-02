@@ -20,13 +20,15 @@ flutter:
 
 ## 2. Model File
 
-Run the download script to fetch the EfficientDet-Lite0 model:
+Run the download script to fetch the EfficientDet-Lite0 model (with built-in NMS):
 
 ```bash
 bash scripts/download_model.sh
 ```
 
-This places the `.tflite` file at `assets/ml/efficientdet_lite0.tflite`.
+This places the `.tflite` file at `assets/ml/efficientdet_lite0.tflite` (~4.5MB).
+
+**Important:** The model must include NMS post-processing (4 output tensors: boxes, classes, scores, count). The MediaPipe version without NMS will NOT work — it outputs raw anchors that the code cannot parse. The download script fetches the correct version.
 
 ## 3. Platform Configuration
 
@@ -135,4 +137,34 @@ enum DetectionState {
 - **Step 1 and Step 2 must never run simultaneously.** Call `shutdown()` and dispose fully before initializing Step 2.
 - **Model loading takes 1-2 seconds.** Show a loading indicator during `initialize()`.
 - The ML layer handles all image format conversion internally — just pass the raw `CameraImage`.
-- Set `initialize(logShapes: true)` on first run to verify model tensor shapes in the console.
+- Set `initialize(logShapes: true)` on first run to verify model tensor shapes in the console. You should see:
+  ```
+  Input tensor: [1, 320, 320, 3]
+  Output tensor 0: [1, 25, 4]    ← boxes
+  Output tensor 1: [1, 25]       ← class IDs
+  Output tensor 2: [1, 25]       ← scores
+  Output tensor 3: [1]           ← detection count
+  ```
+  If you see `[1, 19206, 90]` instead, the wrong model is bundled (no NMS). Re-run `scripts/download_model.sh`.
+
+## 8. What the ML Layer Detects
+
+The model detects COCO objects. For Step 1, we check for:
+
+| Object | Model class IDs | Notes |
+|--------|----------------|-------|
+| Person | 0 | COCO "person" |
+| Monitor/screen | 71 (tv) or 72 (laptop) | COCO "tv" and "laptop" — the model classifies screens as either depending on appearance |
+
+Both must be detected with confidence >= 0.5 in at least 5 out of 6 consecutive frames to reach `confirmed`.
+
+## 9. Validation Results
+
+Tested on 58 real images (2026-04-02):
+
+| Image set | both_present | partial | searching |
+|-----------|-------------|---------|-----------|
+| 50 posture images (person + monitor) | 47 | 3 | 0 |
+| 8 monitor-only (no person) | 0 | 7 | 1 |
+
+The 3 partial results in posture images are extreme poses (-15 degree angles, person reaching far down) where one object falls below the 0.5 confidence threshold. The rolling window handles these gracefully — a brief dropout won't block confirmation.

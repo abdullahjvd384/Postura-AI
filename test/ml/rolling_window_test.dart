@@ -91,7 +91,8 @@ void main() {
       // Add false — should be ignored
       window.addResult(false);
       expect(window.currentState, DetectionState.confirmed);
-      expect(window.positiveCount, 6);
+      // Lock occurs at first confirmation (5/6), so the 6th true is ignored.
+      expect(window.positiveCount, 5);
     });
 
     test('window trims to max 6 entries', () {

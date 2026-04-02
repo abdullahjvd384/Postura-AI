@@ -10,9 +10,11 @@ OUTPUT_DIR="$PROJECT_ROOT/assets/ml"
 OUTPUT_FILE="$OUTPUT_DIR/efficientdet_lite0.tflite"
 TEMP_DIR=$(mktemp -d)
 
-# EfficientDet-Lite0 int8 quantized (~4.4MB) from MediaPipe models bucket.
-# The old tfhub-lite-models URL was decommissioned. This is the current source.
-MODEL_URL="https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite"
+# EfficientDet-Lite0 with built-in NMS post-processing (~4.5MB).
+# This version outputs 4 tensors (boxes, classes, scores, count) ready for use.
+# The MediaPipe version (without NMS) outputs raw anchors and requires manual
+# post-processing — do NOT use that one.
+MODEL_URL="https://github.com/schu-lab/Tensorflow-Object-Detection/raw/main/efficientdet_lite0.tflite"
 
 echo "Downloading EfficientDet-Lite0..."
 mkdir -p "$OUTPUT_DIR"

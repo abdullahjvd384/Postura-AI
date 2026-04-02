@@ -1,0 +1,38 @@
+# Flutter/Dart generated
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test images and evaluation outputs
+Postura-images/
+Postura-images-monitor-only/
+reports/
+
+# Internal eval scripts (not needed by frontend)
+scripts/evaluate_images.dart
+test/ml/client_image_eval_test.dart
+test/ml/debug_*.dart
+
+# Internal planning docs
+plan.md
+Postura_Step1_Requirements_Divided.md
+
+# Windows TFLite DLL (local dev only)
+libtensorflowlite_c-win.dll
+
+# Old/backup model files
+assets/ml/efficientdet_lite0_old_no_nms.tflite
+assets/ml/efficientdet_lite0_nms.tflite

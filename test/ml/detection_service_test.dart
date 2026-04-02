@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:camera/camera.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:postura/ml/detection_service.dart';
 import 'package:postura/ml/detection_state.dart';
@@ -59,7 +60,6 @@ Detection _tv({double confidence = 0.8}) => Detection(
 // Since DetectionService calls preprocessCameraImage internally and we can't
 // easily mock it, we provide a minimal YUV420 CameraImage that won't crash
 // the preprocessor.
-import 'package:camera/camera.dart';
 
 CameraImage _fakeCameraImage() {
   const width = 320;
@@ -112,7 +112,7 @@ void main() {
       expect(stateLog.last, DetectionState.confirmed);
     });
 
-    test('person only → stays partial, never confirmed', () async {
+    test('person only → stays searching, never confirmed', () async {
       await service.initialize();
       mockModel.nextDetections = [_person()];
 
@@ -122,7 +122,7 @@ void main() {
       }
 
       expect(stateLog, isNot(contains(DetectionState.confirmed)));
-      expect(stateLog.last, DetectionState.partial);
+      expect(stateLog.last, DetectionState.searching);
     });
 
     test('empty detections → stays searching', () async {
